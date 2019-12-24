@@ -1,5 +1,5 @@
 <script> 
-    import { is_game_finished, winner } from '../stores/store.js';
+    import { current_player_to_play, winner } from '../stores/store.js';
     import Board from './Board.svelte';
 </script>
 
@@ -12,7 +12,9 @@
 
 <div class="game">
     <Board />
-    {#if $is_game_finished}
+    {#if $winner}
         <p>{$winner} won the game!</p>
+    {:else}
+        <p>{$current_player_to_play}'s turn</p>
     {/if}
 </div>

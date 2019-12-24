@@ -1,45 +1,40 @@
 <script>
-    import { is_game_finished, winner } from '../stores/store.js';
+    import { onMount } from 'svelte';
+    import { winner, squares, winner_lines, players, last_player_to_play } from '../stores/store.js';
     import Square from './Square.svelte';
 
-    let squares = Array(9).fill('');
-    let isXTurn = true;
+    onMount(() => {
+        last_player_to_play.set($players[Math.floor(Math.random() * $players.length)])
+    });
 
-    function handleClick(i) {
-        if ($is_game_finished || squares[i] !== '') {
+    const handleClick = (i) => {
+        if ($winner || $squares[i] !== '') {
             return;
         }
 
-        squares[i] = isXTurn ? 'X' : 'O';
-        if (calculateWinner(squares)) {
-            is_game_finished.set(true);
-            winner.set(isXTurn ? 'X' : 'O');
+        const player_one = $players[0];
+        const player_two = $players[1];
+        const current_player = $last_player_to_play === player_one ? player_two : player_one;
+        $squares[i] = current_player;
+        if (calculateWinner()) {
+            winner.set($squares[i]);
             return;
         }
 
-        isXTurn = !isXTurn;
-    }
+        last_player_to_play.set(current_player);
+    };
 
-    function calculateWinner(squares) {
-        const lines = [
-            [0, 1, 2],
-            [3, 4, 5],
-            [6, 7, 8],
-            [0, 3, 6],
-            [1, 4, 7],
-            [2, 5, 8],
-            [0, 4, 8],
-            [2, 4, 6]
-        ];
-        for (let i = 0; i < lines.length; i++) {
-            const [a, b, c] = lines[i];
-            if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-                return squares[a];
+    const calculateWinner = () => {
+        for (let i = 0; i < $winner_lines.length; i++) {
+            const [a, b, c] = $winner_lines[i];
+
+            if ($squares[a] && $squares[a] === $squares[b] && $squares[a] === $squares[c]) {
+                return $squares[a];
             }
         }
-        return null;
-    }
 
+        return null;
+    };
 </script>
 
 <style>
@@ -51,17 +46,17 @@
 </style>
 
 <div class="board-row">
-    <Square value={squares[0]} handleClick={() => handleClick(0)} />
-    <Square value={squares[1]} handleClick={() => handleClick(1)} />
-    <Square value={squares[2]} handleClick={() => handleClick(2)} />
+    <Square value={$squares[0]} handleClick={ () => handleClick(0) } />
+    <Square value={$squares[1]} handleClick={ () => handleClick(1) } />
+    <Square value={$squares[2]} handleClick={ () => handleClick(2) } />
 </div>
 <div class="board-row">
-    <Square value={squares[3]} handleClick={() => handleClick(3)} />
-    <Square value={squares[4]} handleClick={() => handleClick(4)} />
-    <Square value={squares[5]} handleClick={() => handleClick(5)} />
+    <Square value={$squares[3]} handleClick={ () => handleClick(3) } />
+    <Square value={$squares[4]} handleClick={ () => handleClick(4) } />
+    <Square value={$squares[5]} handleClick={ () => handleClick(5) } />
 </div>
 <div class="board-row">
-    <Square value={squares[6]} handleClick={() => handleClick(6)} />
-    <Square value={squares[7]} handleClick={() => handleClick(7)} />
-    <Square value={squares[8]} handleClick={() => handleClick(8)} />
+    <Square value={$squares[6]} handleClick={ () => handleClick(6) } />
+    <Square value={$squares[7]} handleClick={ () => handleClick(7) } />
+    <Square value={$squares[8]} handleClick={ () => handleClick(8) } />
 </div>
