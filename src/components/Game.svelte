@@ -1,5 +1,10 @@
+<script context="module">
+    const players = ['X', 'O'];
+    let current_player_to_play = '';
+    let winner = null;
+</script>
+
 <script> 
-    import { current_player_to_play, winner } from '../stores/store.js';
     import Board from './Board.svelte';
 </script>
 
@@ -11,7 +16,7 @@
 </style>
 
 <div class="game">
-    <Board />
+    <Board/>
     {#if $winner}
         <p>{$winner} won the game!</p>
     {:else}

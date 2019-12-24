@@ -1,10 +1,9 @@
 <script>
     import { onMount } from 'svelte';
-    import { winner, squares, winner_lines, players, last_player_to_play } from '../stores/store.js';
     import Square from './Square.svelte';
 
     onMount(() => {
-        last_player_to_play.set($players[Math.floor(Math.random() * $players.length)])
+        last_player_to_play.set(players[Math.floor(Math.random() * players.length)])
     });
 
     const handleClick = (i) => {
@@ -12,8 +11,8 @@
             return;
         }
 
-        const player_one = $players[0];
-        const player_two = $players[1];
+        const player_one = players[0];
+        const player_two = players[1];
         const current_player = $last_player_to_play === player_one ? player_two : player_one;
         $squares[i] = current_player;
         if (calculateWinner()) {
